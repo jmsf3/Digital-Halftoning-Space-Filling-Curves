@@ -1,22 +1,23 @@
 #! /usr/bin/env python3
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 # Space Filling Curves
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 # usage examples:
 #
-# space_filling_curves.py --curve peano --order 2
-# space_filling_curves.py --curve hilbert --order 3
-# space_filling_curves.py --curve sierpinski --order 4
-# ------------------------------------------------------------------------------
-# usage: space_filling_curves.py [-h] [--curve curve] [--order order]
+# space_filling_curves.py -t peano -o 1
+# space_filling_curves.py -t hilbert -o 2
+# space_filling_curves.py -t sierpinski -o 3
+# --------------------------------------------------------------------------------------------------
+# usage: space_filling_curves.py [-h] [-t curve_type] [-o order]
 #
 # options:
-#   -h, --help     show this help message and exit
-#   --curve curve  type of space filling curve (hilbert, peano, sierpinski)
-#   --order order  order of the space filling curve (1, 2, 3, ...)
-# ------------------------------------------------------------------------------
+#   -h, --help                              show this help message and exit
+#   -t curve_type, --curve_type curve_type  type of space filling curve (hilbert, peano, sierpinski)
+#   -o order, --order order                 order of the space filling curve (1, 2, 3, ...)
+# --------------------------------------------------------------------------------------------------
 
 import argparse
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -61,28 +62,29 @@ def hilbert(i, order):
         The (x, y) coordinates of the i-th point on the Hilbert curve.
     """
 
-    points = [
+    first_order_coordinates = [
         (0, 0),
         (0, 1),
         (1, 1),
         (1, 0),
     ]
 
-    index = i & 3
-    x, y = points[index]
+    quadrant = i & 3
+    x, y = first_order_coordinates[quadrant]
 
     for j in range(1, order):
         i = i >> 2
-        shift = 2**j
-        index = i & 3
 
-        if (index == 0):
+        shift = 2**j
+        quadrant = i & 3
+
+        if (quadrant == 0):
             x, y = y, x
-        elif (index == 1):
+        elif (quadrant == 1):
             x, y = x, y + shift
-        elif (index == 2):
+        elif (quadrant == 2):
             x, y = x + shift, y + shift
-        elif (index == 3):
+        elif (quadrant == 3):
             x, y = 2 * shift - 1 - y, shift - 1 - x
 
     return (x, y)
@@ -110,52 +112,77 @@ def sierpinski(i, order):
     return (0, 0)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+def space_filling_curve(curve_type, order):
+    """
+    Compute the (x, y) coordinates of the points on a space filling curve of a given type and order.
 
-    default = {
-        'curve': 'hilbert',
-        'order': 4,
-    }
+    Parameters:
+    -----------
+    curve_type : str
+        The type of space filling curve (hilbert, peano, sierpinski).
+    order : int
+        The order of the space filling curve.
 
-    parser.add_argument('--curve', metavar='curve', type=str,
-                        default=default['curve'],
-                        help='type of space filling curve (hilbert, peano, sierpinski)')
-    parser.add_argument('--order', metavar='order', type=int,
-                        default=default['order'],
-                        help='order of the space filling curve (1, 2, 3, ...)')
-    args = parser.parse_args()
+    Returns:
+    --------
+    space_filling_curve : list of tuple of int
+        The (x, y) coordinates of the points on the space filling curve.
+    """
 
-    curve = args.curve
-    order = args.order
-
-    if curve == 'hilbert':
+    if curve_type == 'hilbert':
         n = 2**order
         space_filling_curve = [hilbert(i, order) for i in range(n * n)]
-    elif curve == 'peano':
+    elif curve_type == 'peano':
         n = 3**order
         space_filling_curve = [peano(i, order) for i in range(n * n)]
-    elif curve == 'sierpinski':
+    elif curve_type == 'sierpinski':
         n = 4**order
         space_filling_curve = [sierpinski(i, order) for i in range(n * n)]
     else:
         raise ValueError('invalid curve type, choose from (hilbert, peano, sierpinski)')
 
+    return space_filling_curve
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    default = {
+        'curve_type': 'hilbert',
+        'order': 1,
+    }
+
+    parser.add_argument('-t', '--curve_type', metavar='curve_type', type=str,
+                        default=default['curve_type'],
+                        help='type of space filling curve (hilbert, peano, sierpinski)')
+    parser.add_argument('-o', '--order', metavar='order', type=int,
+                        default=default['order'],
+                        help='order of the space filling curve (1, 2, 3, ...)')
+    args = parser.parse_args()
+
+    curve_type = args.curve_type
+    order = args.order
+
+    curve = space_filling_curve(curve_type, order)
+    n = np.sqrt(len(curve)).astype(int)
+
+    x = [x + 0.5 for x, y in curve]
+    y = [y + 0.5 for x, y in curve]
+
     fig, ax = plt.subplots()
-
-    x = [x + 0.5 for x, y in space_filling_curve]
-    y = [y + 0.5 for x, y in space_filling_curve]
-
     ax.plot(x, y)
 
     ax.set_xticks(range(n + 1))
     ax.set_yticks(range(n + 1))
+
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
 
     ax.set_xlim(0, n)
     ax.set_ylim(0, n)
     ax.set_aspect('equal')
 
     plt.grid(True)
-    plt.title('Space Filling Curves')
+    plt.title(f'{curve_type.capitalize()} Curve of Order {order}')
 
     plt.show()
