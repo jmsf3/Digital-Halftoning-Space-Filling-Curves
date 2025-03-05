@@ -51,7 +51,7 @@ def generate_space_filling_curve(image, curve):
     return space_filling_curve
 
 
-def gammma_correction(image):
+def gamma_correction(image):
 
     #TODO: Implement gamma correction
 
@@ -60,7 +60,7 @@ def gammma_correction(image):
 
 def edge_enhancement(image):
 
-    #TODO: Implement gamma correction
+    #TODO: Implement edge enhancement
 
     return image
 
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     curve = args.curve
     cluster_size = args.cluster_size
 
-    gamma_image = gammma_correction(image)
+    gamma_image = gamma_correction(image)
     edge_image = edge_enhancement(gamma_image)
     halftone_image = halftoning(edge_image, curve, cluster_size)
 
