@@ -2,20 +2,15 @@
 
 ![data/araras_montage.png](data/araras_montage.png)
 
-This is an implementation of the digital halftoning technique introduced in the following article:
-
-*Digital Halftoning with Space-Filling Curves* by Luiz Velho and Jonas de Miranda Gomes,
-Special Interest Group on Computer Graphics and Interactive Techniques (SIGGRAPH), 1991
-
-The authors introduced a technique for generating halftone images from grayscale images using space-filling curves, which is an alternative to the traditional artistic technique of stippling that places small dots of ink onto paper such that their density gives the impression of tone.
+This is an implementation of the digital halftoning technique introduced in the paper *"Digital Halftoning with Space-Filling Curves"* by Luiz Velho and Jonas de Miranda Gomes. The authors introduced a technique for generating halftone images from grayscale images using space-filling curves. This method is an alternative to the traditional artistic technique of stippling, where varying the density of small dots creates the illusion of continuous tones in an image.
 
 ## Pre-requisites
 
-This implementation has been written and tested on Ubuntu 22.04 using the following packages:
+This implementation has been written and tested on Ubuntu 22.04.5 LTS using the following packages:
 
-* OpenCV
-* NumPy
-* Matplotlib
+* OpenCV 4.5
+* NumPy 1.26.4
+* Matplotlib 3.5.1
 
 ## Usage
 

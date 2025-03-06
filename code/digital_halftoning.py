@@ -43,7 +43,7 @@ def order(image_in, curve_type):
     image_in : numpy.ndarray
         The input image for which the curve order is to be computed.
     curve_type : str
-        The type of space-filling curve. Must be one of ('hilbert', 'peano', 'sierpinski').
+        The type of space filling curve (hilbert, peano, sierpinski).
 
     Returns:
     --------
@@ -120,12 +120,12 @@ def halftoning(image_in, curve_type, cluster_size, distribution):
     image_in : numpy.ndarray
         The input grayscale image to be halftoned.
     curve_type : str
-        The type of space-filling curve to use (e.g., 'hilbert', 'peano').
+        The type of space filling curve (hilbert, peano, sierpinski).
     cluster_size : int
         The size of the clusters to divide the curve into for processing.
     distribution : str
-        The method of distributing pixel intensities within each cluster.
-        Options are 'standard', 'ordered', or 'random'.
+        The method of distributing pixel intensities within each cluster
+        (standard, ordered, or random).
 
     Returns:
     --------
