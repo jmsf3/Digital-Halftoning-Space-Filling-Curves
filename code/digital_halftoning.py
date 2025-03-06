@@ -62,17 +62,52 @@ def order(image_in, curve_type):
 
 
 def gamma_correction(image_in, gamma):
+    """
+    Apply gamma correction to an input image.
 
-    # TODO: Implement gamma correction
+    Parameters:
+    -----------
+    image_in : numpy.ndarray
+        The input image with pixel values in the range [0, 255].
+    gamma : float
+        The gamma correction value. A gamma value < 1 will lighten the image, while a
+        gamma value > 1 will darken the image.
 
-    return image_in
+    Returns:
+    --------
+    gamma_corrected_image : numpy.ndarray
+        The gamma-corrected image with pixel values in the range [0, 255].
+    """
+
+    normalized_image = image_in / 255.0
+    gamma_corrected_image = np.power(normalized_image, gamma)
+    gamma_corrected_image = (gamma_corrected_image * 255).astype(np.uint8)
+    return gamma_corrected_image
 
 
 def edge_enhancement(image_in, blur, weight):
+    """
+    Enhance the edges of an input image using Gaussian blur and weighted addition.
 
-    # TODO: Implement edge enhancement
+    Parameters:
+    -----------
+    image_in : numpy.ndarray
+        The input image to be edge-enhanced.
+    blur : float
+        The standard deviation for Gaussian kernel used in blurring.
+    weight : float
+        The weight factor for combining the original and blurred images.
 
-    return image_in
+    Returns:
+    --------
+    edge_enhanced_image : numpy.ndarray
+        The edge-enhanced image.
+    """
+
+    blurred_image = cv2.GaussianBlur(image_in, (0, 0), sigmaX=blur)
+    edge_enhanced_image = cv2.addWeighted(image_in, 1 + weight, blurred_image, -weight, 0)
+    edge_enhanced_image = np.clip(edge_enhanced_image, 0, 255).astype(np.uint8)
+    return edge_enhanced_image
 
 
 def halftoning(image_in, curve_type, cluster_size, distribution):
